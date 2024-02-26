@@ -12,7 +12,7 @@ const start = async () => {
 
     await fastify.register(routes); // Registra as rotas
 
-    await fastify.listen({ port: 3000 });
+    await fastify.listen({ port: 3000, host: '0.0.0.0' });
     console.log(`Server listening on ${fastify.server.address().port}`);
   } catch (err) {
     fastify.log.error(err);

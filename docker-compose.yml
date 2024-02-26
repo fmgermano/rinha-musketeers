@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  haproxy:
+    image: haproxy:latest
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    ports:
+      - "9999:9999"
+    depends_on:
+      - api01
+      - api02
+
+  api01:
+    image: sua_imagem_api:latest # Substitua pela sua imagem específica
+    environment:
+      - DB_HOSTNAME=db
+      - DB_USER=root
+      - DB_PASSWORD=789987
+      - DB_NAME=db_rinha
+    depends_on:
+      - db
+
+  api02:
+    image: sua_imagem_api:latest # A mesma imagem da api01
+    environment:
+      - DB_HOSTNAME=db
+      - DB_USER=root
+      - DB_PASSWORD=789987
+      - DB_NAME=db_rinha
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 789987
+      MYSQL_DATABASE: db_rinha
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+
+volumes:
+  db_data:
+
+networks:
+  default:
+    name: rinha_backend_network
